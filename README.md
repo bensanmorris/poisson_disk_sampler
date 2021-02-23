@@ -1,6 +1,6 @@
 # Object placement using poisson disk sampling
 
-Inspired by [Herman Tulleken's article](http://devmag.org.za/2009/05/03/poisson-disk-sampling/) and extended to distribute points with no overlap across layers containing objects of varying radii and separated by varying min / max distances.
+Inspired by [Herman Tulleken's article](http://devmag.org.za/2009/05/03/poisson-disk-sampling/) and extended to distribute points with no overlap across layers containing objects of varying radii and separated by varying distances.
 
 # How to use
 
