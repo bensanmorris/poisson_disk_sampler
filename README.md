@@ -1,6 +1,11 @@
-# Object placement using poisson disk sampling
+# Poisson disk sampling
 
-Inspired by [Herman Tulleken's article](http://devmag.org.za/2009/05/03/poisson-disk-sampling/) and extended to distribute points with no overlap across layers containing objects of varying radii and separated by varying distances.
+Poisson disk sampling can be used to procedurally sample a region of space. It's not as messy as random placement or as uniform as grid-based methods. This solution is inspired by [Herman Tulleken's article](http://devmag.org.za/2009/05/03/poisson-disk-sampling/) which I've extended to support sampling regions using varying sampling radii and sample separation distances (using layers - a layer defines a sample's min / max radius and separation distance). The approach uses brute force so could be optimised (see further work section below)
+
+Some applications:
+
+- Sampling an image / regions of an image
+- Procedurally placing objects of varying sizes in a game with no overlap
 
 # How to use
 
@@ -34,7 +39,7 @@ for(const auto& layer : layers)
 
 ![](example.png)
 
-# Performance
+# Performance and further work
 
 Here are some performance statistics for tile sizes 8,16,32,64,128,256,512 for a distribution containing 3 layers. NB. The culling of overlapping objects accross layers uses a brute force approach and so could be improved upon (see ```checkPoint()```):
 
