@@ -38,6 +38,7 @@ for(const auto& layer : layers)
 ```
 
 ![](example.png)
+![](Voronoi_poisson_cells.PNG)
 
 # Performance and further work
 
