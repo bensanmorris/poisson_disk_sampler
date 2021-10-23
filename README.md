@@ -6,6 +6,7 @@ Some applications:
 
 - Sampling an image / regions of an image
 - Procedurally placing objects of varying sizes in a game with no overlap
+- Creating a voronoi partitioning (using the poisson points as the voronoi points)
 
 # How to use
 
