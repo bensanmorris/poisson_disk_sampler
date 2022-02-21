@@ -113,7 +113,7 @@ namespace poisson
 #ifdef DEBUG_POISSON
             int c = 0;
 #endif
-            while(!activeList.empty() /*&& (pointListArray[k].size() < maxPoints)*/)
+            while(!activeList.empty() && (pointListArray[k].size() < maxPoints))
             {
                 // choose a random value between 0 and activeList.size() - 1
                 int listIndex = randomInt(activeList.size());
@@ -147,6 +147,30 @@ namespace poisson
 #endif
         }
 
+        // for each layer
+        for (int k = 0; k < layerCount; k++)
+        {
+            // for each point in the point list for the current layer
+            for (PointList::iterator point = pointListArray[k].begin(); point != pointListArray[k].end();)
+            {
+                // check that the point does not collide with any other above
+                Circle pt = *point;
+                if (!distribution.placeObject(k, pt.x, pt.y))
+                {
+                    // remove from grid
+                    Vector2DInt index(pointToInt(pt, p0, cellSize[k]));
+                    PointList::iterator it = std::find(grids[k][index.x][index.y].begin(), grids[k][index.x][index.y].end(), (*point));
+                    assert(it != grids[k][index.x][index.y].end());
+                    grids[k][index.x][index.y][std::distance(grids[k][index.x][index.y].begin(), it)].active = false;
+
+                    // remove from point list
+                    point = pointListArray[k].erase(point);
+                }
+                else
+                    point++;
+            }
+        }
+
         if (multiLayer)
         {
             // for each layer
@@ -157,7 +181,7 @@ namespace poisson
                 {
                     // check that the point does not collide with any other above
                     Circle pt = *point;
-                    if (!distribution.placeObject(k, pt.x, pt.y) || checkPoint(pt, k, grids))
+                    if (checkPoint(pt, k, grids))
                     {
                         // remove from grid
                         Vector2DInt index(pointToInt(pt, p0, cellSize[k]));
