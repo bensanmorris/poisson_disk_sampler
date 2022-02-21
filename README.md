@@ -39,6 +39,36 @@ for(const auto& layer : layers)
 
 ![](example.png)
 
+# Filtering 
+
+Discard points by implementing the `placeObject` method to perform your filtering (i.e. discard points in scene meshes or using simle formulae):
+
+```
+struct Distribution : public PoissonDiskMultiSampler::RealFunction2D
+{
+Distribution(){}
+virtual bool placeObject(int layerIndex, float x, float y) {
+    return int(x) % 2 == 0;
+}
+};
+Distribution distribution;
+PoissonDiskMultiSampler sampler(-(SIZE / 2.f),
+                            -(SIZE / 2.f),
+                             (SIZE / 2.f),
+                             (SIZE / 2.f),
+                             minDist,
+                             minRadi,
+                             maxRadi,
+                             200*SIZE,
+                             distribution,
+                             minDist.size() > 1,
+                             30);
+```
+
+The above will discard items placed on uneven columns to create a furrowed field effect for instance:
+
+![xmod2iszero.png]
+
 # Performance and further work
 
 Here are some performance statistics for tile sizes 8,16,32,64,128,256,512 for a distribution containing 3 layers. NB. The culling of overlapping objects accross layers uses a brute force approach and so could be improved upon (see ```checkPoint()```):
