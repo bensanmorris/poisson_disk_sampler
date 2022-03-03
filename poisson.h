@@ -5,10 +5,24 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/epsilon.hpp"
 
+#if defined( __WIN32__ ) || defined( _WIN32 ) || defined( WIN32 ) || defined( _WINDOWS )
+#    define DLL_EXPORT __declspec(dllexport)
+#    define DLL_IMPORT __declspec(dllimport)
+#    if defined POISSON_EXPORTS
+#        define _poissonExport DLL_EXPORT
+#    else
+#        define _poissonExport DLL_IMPORT
+#    endif
+#else
+#    define DLL_EXPORT
+#    define DLL_IMPORT
+#    define _poissonExport
+#endif
+
 namespace poisson
 {
     static const float EPSILON = static_cast<float>(1.e-6);
-    class PoissonDiskMultiSampler
+    class _poissonExport PoissonDiskMultiSampler
     {
     public:
 
