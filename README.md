@@ -59,7 +59,7 @@ PoissonDiskMultiSampler sampler(-(SIZE / 2.f),
                              minDist,
                              minRadi,
                              maxRadi,
-                             200*SIZE,
+                             200*SIZE, // nb. set to zero to fill until full
                              distribution,
                              minDist.size() > 1,
                              30);
