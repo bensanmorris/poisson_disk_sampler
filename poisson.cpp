@@ -113,7 +113,7 @@ namespace poisson
 #ifdef DEBUG_POISSON
             int c = 0;
 #endif
-            while(!activeList.empty() && (pointListArray[k].size() < maxPoints))
+            while(!activeList.empty() && (maxPoints > 0 ? pointListArray[k].size() < maxPoints : true))
             {
                 // choose a random value between 0 and activeList.size() - 1
                 int listIndex = randomInt(activeList.size());
