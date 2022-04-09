@@ -30,7 +30,7 @@ static void BM_poisson(benchmark::State& s)
                                           minDist,
                                           minRadi,
                                           maxRadi,
-                                          5*tileSize,
+                                          5*tileSize, // NB. set to zero to fill until full
                                           distribution,
                                           minDist.size() > 1,
                                           10);
