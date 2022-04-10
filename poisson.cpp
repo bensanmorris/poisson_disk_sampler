@@ -84,25 +84,40 @@ namespace poisson
         }
     }
 
-    void PoissonDiskMultiSampler::sample(PointListArray& pointListArray)
+    void PoissonDiskMultiSampler::sample(PointListArray& pointListArray, Grids precalculatedLayerGrids)
     {
         // create point lists for layers        
         initPointListArray(pointListArray, layerCount);
 
         // create a list of grids
-        std::vector<Grid> grids;
         grids.reserve(layerCount);
+        grids.resize(layerCount);
+
+        if(!precalculatedLayerGrids.empty())
+        {
+            int layer = 0;
+            for(const auto& grid : precalculatedLayerGrids)
+            {
+                if(!grid.empty())
+                    grids[layer] = grid;
+                layer++;
+            }
+        }
 
         // for each layer
         for (int k = 0; k < layerCount; ++k)
         {
+            // the grid at this layer has been precalculated so skip
+            if(!grids[k].empty())
+                continue;
+
             // create a list to hold the active points
             PointList activeList;
 
             // create a grid at the current layer
             Grid grid;
             initGrid(grid, gridHeight[k], gridWidth[k]);
-            grids.push_back(grid);
+            grids[k] = (grid);
 
             // chooses a random point in the grid
             // adds it to the grid point into the cell relating to the point location
@@ -113,7 +128,7 @@ namespace poisson
 #ifdef DEBUG_POISSON
             int c = 0;
 #endif
-            while(!activeList.empty() && (maxPoints > 0 ? pointListArray[k].size() < maxPoints : true))
+            while(!activeList.empty() /*&& (maxPoints > 0 ? pointListArray[k].size() < maxPoints : true)*/)
             {
                 // choose a random value between 0 and activeList.size() - 1
                 int listIndex = randomInt(activeList.size());

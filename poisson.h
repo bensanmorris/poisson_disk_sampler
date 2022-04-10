@@ -70,7 +70,12 @@ namespace poisson
             bool multiLayer_,
             int pointsToGenerate_ = DEFAULT_POINTS_TO_GENERATE);
 
-        void sample(PointListArray& pointListArray);
+        typedef std::vector<PointListArray> Grid;
+        typedef std::vector<Grid>           Grids;
+
+        void sample(PointListArray& pointListArray, Grids precalculatedLayerGrids = Grids());
+
+        Grids grids;
 
     private:
         int maxPoints;
@@ -86,9 +91,6 @@ namespace poisson
         int layerCount;
         bool multiLayer;
         RealFunction2D& distribution;
-
-        typedef std::vector<PointListArray> Grid;
-        typedef std::vector<Grid>           Grids;
 
         void initPointListArray(PointListArray& pointList, int size);
         void initGrid(Grid& grid, int rows, int cols);
