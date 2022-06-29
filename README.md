@@ -68,6 +68,10 @@ PoissonDiskMultiSampler sampler(-(SIZE / 2.f),
 The above will discard items placed on uneven columns to create a furrowed field effect for instance:
 
 ![](xmod2iszero.png)
+    
+Similarly you can implement a filter in terms of noise to selectively place objects in coherent clusters:
+    
+![](noise.png)
 
 # Performance and further work
 
