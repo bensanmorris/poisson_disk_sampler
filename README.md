@@ -71,7 +71,7 @@ The above will discard items placed on uneven columns to create a furrowed field
     
 Similarly you can implement a filter in terms of noise to selectively place objects in coherent clusters:
     
-![](noise.png) ![](noise2.png)
+![](noise.png)
 
 # Performance and further work
 
