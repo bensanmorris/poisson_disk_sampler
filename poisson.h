@@ -92,7 +92,6 @@ namespace poisson
         bool multiLayer;
         RealFunction2D& distribution;
 
-        void initPointListArray(PointListArray& pointList, int size);
         void initGrid(Grid& grid, int rows, int cols);
 
         static float randomFloat();

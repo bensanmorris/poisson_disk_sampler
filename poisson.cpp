@@ -25,17 +25,6 @@ namespace poisson
         }
     }
 
-    void PoissonDiskMultiSampler::initPointListArray(PointListArray& pointList, int size)
-    {
-        pointList.reserve(size);
-        for(int i = 0; i < size; ++i)
-        {
-            PointList points;
-            // TODO - reserve space for points (row * cols)
-            pointList.push_back(points);
-        }
-    }
-
     float PoissonDiskMultiSampler::randomFloat()
     {
         return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -86,11 +75,10 @@ namespace poisson
 
     void PoissonDiskMultiSampler::sample(PointListArray& pointListArray, Grids precalculatedLayerGrids)
     {
-        // create point lists for layers        
-        initPointListArray(pointListArray, layerCount);
+        // create point lists for layers
+        pointListArray.resize(layerCount);
 
         // create a list of grids
-        grids.reserve(layerCount);
         grids.resize(layerCount);
 
         if(!precalculatedLayerGrids.empty())
@@ -99,7 +87,9 @@ namespace poisson
             for(const auto& grid : precalculatedLayerGrids)
             {
                 if(!grid.empty())
+                {
                     grids[layer] = grid;
+                }
                 layer++;
             }
         }
