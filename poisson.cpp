@@ -73,8 +73,10 @@ namespace poisson
         }
     }
 
-    void PoissonDiskMultiSampler::sample(PointListArray& pointListArray, Grids precalculatedLayerGrids)
+    void PoissonDiskMultiSampler::sample(PointListArray& pointListArray, Grids precalculatedLayerGrids, int seed)
     {
+        srand(seed);
+
         // create point lists for layers
         pointListArray.resize(layerCount);
 

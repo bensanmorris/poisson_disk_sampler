@@ -73,7 +73,7 @@ namespace poisson
         typedef std::vector<PointListArray> Grid;
         typedef std::vector<Grid>           Grids;
 
-        void sample(PointListArray& pointListArray, Grids precalculatedLayerGrids = Grids());
+        void sample(PointListArray& pointListArray, Grids precalculatedLayerGrids = Grids(), int seed = 1);
 
         Grids grids;
 
