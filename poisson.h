@@ -96,7 +96,7 @@ namespace poisson
 
         static float randomFloat();
         static uint32_t randomInt(uint32_t max);
-        bool checkPoint(Circle q, int layerIndex, Grids& grids);
+        bool pointCollisionDetected(Circle q, int layerIndex, Grids& grids);
         bool addNextPoint(Grid& grid, PointList& activeList, PointList& pointList, Circle point, int layerIndex);
         static Circle generateAround(glm::vec2 centre, float minDist, float minRadius, float radius, float distanceScale, float angleScale, float radiusScale);  
         void addFirstPoint(Grid& grid, PointList& activeList, PointList& pointList, int layerIndex);

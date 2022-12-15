@@ -154,7 +154,7 @@ namespace poisson
 #endif
         }
 
-        // for each layer
+        // place objects
         for (int k = 0; k < layerCount; k++)
         {
             // for each point in the point list for the current layer
@@ -180,7 +180,7 @@ namespace poisson
 
         if (multiLayer)
         {
-            // for each layer
+            // cull overlapping layer objects
             for (int k = (layerCount-2); k >= 0; k--)
             {
                 // for each point in the point list for the current layer
@@ -188,7 +188,7 @@ namespace poisson
                 {
                     // check that the point does not collide with any other above
                     Circle pt = *point;
-                    if (checkPoint(pt, k, grids))
+                    if (pointCollisionDetected(pt, k, grids))
                     {
                         // remove from grid
                         Vector2DInt index(pointToInt(pt, p0, cellSize[k]));
@@ -206,7 +206,7 @@ namespace poisson
         }
     }
 
-    bool PoissonDiskMultiSampler::checkPoint(Circle q, int layerIndex, Grids& grids)
+    bool PoissonDiskMultiSampler::pointCollisionDetected(Circle q, int layerIndex, Grids& grids)
     {
         int k = 0;
         bool tooClose = false;
