@@ -8,7 +8,11 @@
 
 namespace poisson
 {
-
+    namespace
+    {
+        static std::mt19937 rng;
+        static bool rngSeeded = false;
+    }
     int PoissonDiskMultiSampler::DEFAULT_POINTS_TO_GENERATE = 30;
 
     void PoissonDiskMultiSampler::initGrid(Grid& grid, int rows, int cols)
@@ -27,12 +31,14 @@ namespace poisson
 
     float PoissonDiskMultiSampler::randomFloat()
     {
-        return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+        return dist(rng);
     }
 
     uint32_t PoissonDiskMultiSampler::randomInt(uint32_t max)
     {
-        return (rand() % static_cast<int>(max));
+        std::uniform_int_distribution<uint32_t> dist(0, max - 1);
+        return dist(rng);
     }
 
     PoissonDiskMultiSampler::PoissonDiskMultiSampler(float x0,
@@ -75,7 +81,11 @@ namespace poisson
 
     void PoissonDiskMultiSampler::sample(PointListArray& pointListArray, Grids precalculatedLayerGrids, int seed)
     {
-        srand(seed);
+        if (!rngSeeded)
+        {
+            rng.seed(static_cast<uint32_t>(seed));
+            rngSeeded = true;
+        }
 
         // create point lists for layers
         pointListArray.resize(layerCount);
