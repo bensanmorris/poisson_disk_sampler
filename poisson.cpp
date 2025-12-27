@@ -5,6 +5,7 @@
 #ifdef DEBUG_POISSON
 #include <iostream>
 #endif
+#include <random>
 
 namespace poisson
 {
