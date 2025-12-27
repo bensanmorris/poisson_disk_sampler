@@ -100,6 +100,6 @@ namespace poisson
         bool addNextPoint(Grid& grid, PointList& activeList, PointList& pointList, Circle point, int layerIndex);
         static Circle generateAround(glm::vec2 centre, float minDist, float minRadius, float radius, float distanceScale, float angleScale, float radiusScale);  
         void addFirstPoint(Grid& grid, PointList& activeList, PointList& pointList, int layerIndex);
-        static Vector2DInt pointToInt(glm::vec2 point, glm::vec2 origin, float cellSize);
+        static Vector2DInt pointToInt(glm::vec2 point, glm::vec2 origin, float cellSize, int gridWidth, int gridHeight);
     };
 }

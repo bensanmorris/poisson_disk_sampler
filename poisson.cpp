@@ -165,7 +165,7 @@ namespace poisson
                 if (!distribution.placeObject(k, pt.x, pt.y))
                 {
                     // remove from grid
-                    Vector2DInt index(pointToInt(pt, p0, cellSize[k]));
+                    Vector2DInt index(pointToInt(pt, p0, cellSize[k], gridWidth[k], gridHeight[k]));
                     PointList::iterator it = std::find(grids[k][index.x][index.y].begin(), grids[k][index.x][index.y].end(), (*point));
                     assert(it != grids[k][index.x][index.y].end());
                     grids[k][index.x][index.y][std::distance(grids[k][index.x][index.y].begin(), it)].active = false;
@@ -191,7 +191,7 @@ namespace poisson
                     if (pointCollisionDetected(pt, k, grids))
                     {
                         // remove from grid
-                        Vector2DInt index(pointToInt(pt, p0, cellSize[k]));
+                        Vector2DInt index(pointToInt(pt, p0, cellSize[k], gridWidth[k], gridHeight[k]));
                         PointList::iterator it = std::find(grids[k][index.x][index.y].begin(), grids[k][index.x][index.y].end(), (*point));
                         assert(it != grids[k][index.x][index.y].end());
                         grids[k][index.x][index.y][std::distance(grids[k][index.x][index.y].begin(), it)].active = false;
@@ -218,17 +218,19 @@ namespace poisson
             const Grid& grid = grids.at(k);
 
             // convert the current layer point q to an index into the grid for layer above (k). p0 represents a 2d vector that is the origin of all grids
-            Vector2DInt qIndex = pointToInt(q, p0, cellSize[k]);
+            Vector2DInt qIndex = pointToInt(q, p0, cellSize[k], gridWidth[k], gridHeight[k]);
 
             // perform a point collision check
-            int32_t lIdx  = std::max<int32_t>(0, qIndex.x - 2);             // LEFT
-            int32_t rIdx  = std::min<int32_t>(gridWidth[k],  qIndex.x + 2); // RIGHT
-            int32_t tIdx  = std::min<int32_t>(gridHeight[k], qIndex.y + 2); // TOP
-            int32_t bIdx  = std::max<int32_t>(0, qIndex.y - 2);             // BOTTOM
-            for (int i = lIdx; (i < rIdx) && !tooClose; ++i)
+            const int32_t maxX = gridWidth[k] - 1;
+            const int32_t maxY = gridHeight[k] - 1;
+
+            int32_t lIdx = std::max<int32_t>(0, qIndex.x - 2);
+            int32_t rIdx = std::min<int32_t>(maxX, qIndex.x + 2);
+            int32_t bIdx = std::max<int32_t>(0, qIndex.y - 2);
+            int32_t tIdx = std::min<int32_t>(maxY, qIndex.y + 2);
+            for (int i = lIdx; (i <= rIdx) && !tooClose; ++i)
             {
-                // same as above but for the height
-                for (int j = bIdx; (j < tIdx) && !tooClose; ++j)
+                for (int j = bIdx; (j <= tIdx) && !tooClose; ++j)
                 {
                     // i == col index, j == row index, for each point in the list of points for the grid cell i,j
                     for (const Circle& gridPoint : grid[i][j])
@@ -269,13 +271,20 @@ namespace poisson
         if (((q.x-r) > p0.x) && ((q.x+r) < p1.x) && ((q.y-r) > p0.y) && ((q.y+r) < p1.y))
         {
             // get the index of the point
-            Vector2DInt qIndex = pointToInt(q, p0, cellSize[layerIndex]);
+            Vector2DInt qIndex = pointToInt(q, p0, cellSize[layerIndex], gridWidth[layerIndex], gridHeight[layerIndex]);
 
             // perform locality check
             bool tooClose = false;
-            for (int i = std::max<int32_t>(0, qIndex.x - 2); (i < std::min<int32_t>(gridWidth[layerIndex], qIndex.x + 3)) && !tooClose; i++)
+            const int32_t maxX = gridWidth [layerIndex] - 1;
+            const int32_t maxY = gridHeight[layerIndex] - 1;
+            for (int i = std::max<int32_t>(0, qIndex.x - 2);
+                (i <= std::min<int32_t>(maxX, qIndex.x + 2)) && !tooClose;
+                ++i)
             {
-                for (int j = std::max<int32_t>(0, qIndex.y - 2); (j < std::min<int32_t>(gridHeight[layerIndex], qIndex.y + 3)) && !tooClose; j++)
+                for (int j = std::max<int32_t>(0, qIndex.y - 2);
+                    (j <= std::min<int32_t>(maxY, qIndex.y + 2)) && !tooClose;
+                    ++j)
+
                 {
                     for (Circle gridPoint : grid[i][j])
                     {
@@ -323,16 +332,29 @@ namespace poisson
         d = randomFloat();
         float rr = minRadii[layerIndex] + d * (radii[layerIndex] - minRadii[layerIndex]);
         Circle p(xr, yr, rr);
-        Vector2DInt index(pointToInt(p, p0, cellSize[layerIndex]));
+        Vector2DInt index(pointToInt(p, p0, cellSize[layerIndex], gridWidth[layerIndex], gridHeight[layerIndex]));
 
         grid[index.x][index.y].push_back(p);
         activeList.push_back(p);
         pointList.push_back(p);
     }
 
-    PoissonDiskMultiSampler::Vector2DInt PoissonDiskMultiSampler::pointToInt(glm::vec2 point, glm::vec2 origin, float cellSize)
+    PoissonDiskMultiSampler::Vector2DInt PoissonDiskMultiSampler::pointToInt
+    (
+        glm::vec2 point, 
+        glm::vec2 origin, 
+        float cellSize,
+        int gridWidth,
+        int gridHeight
+    )
     {
-        return Vector2DInt((int) ((point.x - origin.x) / cellSize), (int) ((point.y - origin.y) / cellSize));
+        int x = static_cast<int>((point.x - origin.x) / cellSize);
+        int y = static_cast<int>((point.y - origin.y) / cellSize);
+
+        x = std::clamp(x, 0, gridWidth - 1);
+        y = std::clamp(y, 0, gridHeight - 1);
+
+        return Vector2DInt(x, y);
     }
 
 }
